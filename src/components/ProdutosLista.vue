@@ -12,18 +12,32 @@
 <script>
 
 import { api } from "@/services.js"
+import { serializei } from "@/helpers.js"
 
 export default {
   data() {
     return {
-      produtos: null
+      produtos: null,
+      produtosPorPagina: 9
+    }
+  },
+  computed: {
+    url() {
+      const quary = serializei(this.$router.quary)
+     
+      return `/produto?_limit=${this.produtosPorPagina}${quary}`
     }
   },
   methods: {
     getProdutos() {
-      api.get("/produto").then(response => {
+      api.get(this.url).then(response => {
         this.produtos = response.data
       }) 
+    }
+  },
+  watch: {
+    url() {
+      this.getProdutos()
     }
   },
   created() {
